@@ -1,0 +1,82 @@
+﻿@model QLSV.Model.Models.Student
+
+@{
+    ViewData["Title"] = "Xóa sinh viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Bạn muốn xóa sinh viên này?</h3>
+<div>
+    <h4>Student</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            Mã sinh viên
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.StudentCode)
+        </dd>
+        <dt class = "col-sm-3">
+            Họ tên
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Lớp
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PrimaryClass.Name)
+        </dd>
+        <dt class = "col-sm-3">
+            Giới tính
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class = "col-sm-3">
+            Ngày sinh
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateOfBirth)
+        </dd>
+        <dt class = "col-sm-3">
+            Ngày nhập học
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateOfAdmission)
+        </dd>
+        <dt class = "col-sm-3">
+            Địa chỉ
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class = "col-sm-3">
+            Số điện thoại
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+       
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.Avatar)
+        </dt>
+        <dd class = "col-sm-9">
+            @if (Model.Avatar != null)
+            {
+                <img id="outputAvatar" class="img-rounded" src="data:image /png;base64, @Convert.ToBase64String(Model.Avatar);" style="width: 110px; height: 110px; margin: 0 auto;" />
+            }
+        </dd>
+        
+        
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="StudentId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

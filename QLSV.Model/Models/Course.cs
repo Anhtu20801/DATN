@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace QLSV.Model.Models
 {
@@ -23,7 +24,7 @@ namespace QLSV.Model.Models
         public string? Note { get; set; } //Ghi chu
         public string? SpecialRequirements { get; set; } //Yeu cau dac biet
         public string? Documentation { get; set; } //Tai lieu tham khao
-
+        [ValidateNever]
         public virtual ICollection<Classroom> Classrooms { get; set; }
     }
 }

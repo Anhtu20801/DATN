@@ -1,0 +1,90 @@
+﻿@model IEnumerable<QLSV.Model.Models.Attendance>
+
+@{
+    ViewData["Title"] = "Danh sách điểm danh";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>@ViewBag.Folder</p>
+<button id="trainingBtn" class="btn btn-primary">Train face image</button>
+<a id="recognize" class="btn btn-primary" asp-area="Instructor" asp-controller="Attendances" asp-action="Recognize" style="outline: none">Điểm danh</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TeacherId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AttenTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Check)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CourseId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttenTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Check)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TeacherId)
+                </td>
+                
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.AttendanceId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.AttendanceId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.AttendanceId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#trainingBtn').on('click', function(){
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("TrainingFace","Attendances")',
+                    success: function(response){
+                        if(response.result == true)
+                            alert("training data successfully");
+                        console.log(response);
+                    },
+                    error: function(error){
+                        alert("training data don't successfully");
+                    }
+                })
+            })
+        });
+
+    </script>
+}

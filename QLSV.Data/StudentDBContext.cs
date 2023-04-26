@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QLSV.Data.Data;
 using QLSV.Model.Models;
 
 namespace QLSV.Data
@@ -25,6 +26,7 @@ namespace QLSV.Data
 
             modelBuilder.Entity<Result>()
                 .HasKey(r => new { r.TeacherId, r.CourseId,r.StudentId });
+
             modelBuilder.Entity<Result>()
                 .HasOne<Student>(s => s.Student)
                 .WithMany(r => r.Results)
@@ -37,6 +39,13 @@ namespace QLSV.Data
                 .HasForeignKey(classroom => new { classroom.TeacherId, classroom.CourseId})
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Attendance>()
+                .HasOne<Result>(r => r.Results)
+                .WithMany(a => a.Attendances)
+                .HasForeignKey(r => new {r.StudentId, r.TeacherId, r.CourseId});
+            
+            modelBuilder.Seed();
+            base.OnModelCreating(modelBuilder);
         }
 
         //entities

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLSV.Model.Models
@@ -16,7 +17,10 @@ namespace QLSV.Model.Models
         public string? Description { get; set; }
 
         public int DepartmentId { get; set; }
+        [ValidateNever]
         public virtual Department Department { get; set; }
+        
+        [ValidateNever]
         public virtual ICollection<Student> Students { get; set; }
     }
 }

@@ -1,0 +1,126 @@
+﻿@model QLSV.Model.Models.Student
+
+@{
+    ViewData["Title"] = "Sửa thông tin sinh viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h3>
+    @ViewData["Title"]
+</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label asp-for="Name" class="font-weight-bolder">Họ tên</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Gender" class="font-weight-bolder">Giới tính</label>
+                        <input asp-for="Gender" class="form-control" />
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Major" class="font-weight-bolder">Ngành học</label>
+                        <input asp-for="Major" class="form-control" />
+                        <span asp-validation-for="Major" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PrimaryClassId" class="font-weight-bolder">Lớp</label>
+                        <select asp-for="PrimaryClassId" class="form-control" asp-items="@ViewBag.ClassPrimaryList" style="cursor: pointer"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address" class="font-weight-bolder">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="font-weight-bolder">Số điện thoại</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Avatar" class="font-weight-bolder"></label>
+                        <p style="display: flex;">
+                            <label asp-for="Avatar" style=" flex: 1; cursor:pointer;padding: 3px 7px; border: 1px solid #999; border-radius: 5px; height: 30px; max-width: 120px">Chọn file ảnh</label>
+                            @if(Model.Avatar != null)
+                            {
+                                <img id="outputAvatar" class="img-rounded" src="data:image /png;base64, @Convert.ToBase64String(Model.Avatar);" style="width: 110px; height: 110px; margin: 0 auto;" />
+                            }
+                        </p>
+                        <input asp-for="Avatar" class="form-control" type="file" style="display: none" onchange="loadFile(event)" />
+                        <span asp-validation-for="Avatar" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-1"></div>
+
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label asp-for="DateOfBirth" class="font-weight-bolder">Ngày sinh</label>
+                        <input asp-for="DateOfBirth" class="form-control" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DateOfAdmission" class="font-weight-bolder">Ngày nhập học</label>
+                        <input asp-for="DateOfAdmission" class="form-control" />
+                        <span asp-validation-for="DateOfAdmission" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CCCDNumber" class="font-weight-bolder">Mã CCCD</label>
+                        <input asp-for="CCCDNumber" class="form-control" />
+                        <span asp-validation-for="CCCDNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CCCDDateStart" class="font-weight-bolder">Ngày cấp CCCD</label>
+                        <input asp-for="CCCDDateStart" class="form-control" />
+                        <span asp-validation-for="CCCDDateStart" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FrontCCCDImage" class="font-weight-bolder">Ảnh mặt trước CCCD</label>
+                        <input asp-for="FrontCCCDImage" class="form-control" />
+                        <span asp-validation-for="FrontCCCDImage" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BackCCCDImage" class="font-weight-bolder">Ảnh mặt sau CCCD</label>
+                        <input asp-for="BackCCCDImage" class="form-control" />
+                        <span asp-validation-for="BackCCCDImage" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="MedicareCardNumber" class="font-weight-bolder">Mã thẻ BHYT</label>
+                        <input asp-for="MedicareCardNumber" class="form-control" />
+                        <span asp-validation-for="MedicareCardNumber" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="col-md-1"></div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var loadFile = function (event) {
+            var image = document.getElementById("outputAvatar");
+            image.src = URL.createObjectURL(event.target.files[0])
+        }
+    </script>
+}

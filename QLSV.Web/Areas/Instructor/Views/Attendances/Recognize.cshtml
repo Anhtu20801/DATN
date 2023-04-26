@@ -1,0 +1,143 @@
+﻿@{
+    ViewData["Title"] = "Điểm danh sinh viên";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2 style="margin: 10px;">@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-5">
+        @ViewBag.Message
+        <video id="video" style="width: 100%; height: auto; margin-bottom: 15px"></video>
+        <canvas id="canvas" style="width: 100%; height: auto; min-height: 360px; margin-bottom: 15px"></canvas>
+        <image id="image" src="" style="width: 100%; height: auto;" />
+        <button id="start" class="btn btn-primary">Điểm danh</button>
+        <button id="stop" class="btn btn-danger">Dừng</button>
+    </div>
+    <div class="col-md-7">
+        <h3>Kết quả điểm danh</h3>
+        <p>@ViewBag.ImageData</p>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Số thứ tự</th>
+                    <th>Mã sinh viên</th>
+                    <th>Tên sinh viên</th>
+                    <th>Trạng thái</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var image = document.getElementById('image');
+        var video = document.getElementById('video');
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        var startButton = document.querySelector("#start");
+        var stopButton = document.querySelector("#stop");
+        var detectFaceInterval;
+        var recognizeFaceInterval;
+        canvas.style.display = 'none';
+        // Initialize the webcam
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(function (stream) {
+                video.srcObject = stream;
+                video.play();
+                canvas.style.display = 'block';
+                video.style.display = 'none';
+                setInterval(function(){
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                }, 10);
+
+                //detectFaceInterval = setInterval(function () {
+                //    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                //    var image = canvas.toDataURL();
+                //    $.ajax({
+                //        type: "POST",
+                //        url: "@Url.Action("DetectFace", "Attendances")",
+                //        async: false,
+                //        data: { imageString: image },
+                //        success: function (result) {
+                //            console.log(result);
+                //            if (result.result == true) {
+                //                var pX = canvas.width / 2 - result.faceWidth / 2;
+                //                var pY = canvas.height / 2 - result.faceHeight / 2;
+
+                //                context.rect(pX, pY, result.faceWidth + 50, result.faceHeight);
+                //                context.lineWidth = "1";
+                //                context.strokeStyle = "red";
+                //                context.stroke();
+                //            }
+                            
+                //        },
+                //        error: function (xhr) {
+                //            alert('error');
+                //        }
+                //    });
+                //}, 10);
+            })
+            .catch(function (err) {
+                console.log("An error occurred: " + err);
+            });
+
+        startButton.onclick = function () {
+            if (video.paused) {
+                video.play();
+            }
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+
+            recognizeFaceInterval = setInterval(function () {
+                var image = canvas.toDataURL();
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Recognize", "Attendances")",
+                    async: false,
+                    data: { imageString: image },
+                    success: function (result) {
+                        console.log(result);
+                        if (result.result == true) {
+                            //clearInterval(detectFaceInterval);
+                            console.log(result.label);
+                            var s = `
+                                        <tr>
+                                            <td>${result.label}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Điểm danh thành công</td>
+                                            <td>${result.time}</td>
+                                        </tr>
+                                    `
+                            $('tbody').html(s);
+                            //video.pause();
+                            clearInterval(recognizeFaceInterval);
+                        }
+                        //else
+                        //    alert("don't detect face");
+                    },
+                    error: function (error) {
+                        console.log('error: ' + error.error);
+                    }
+                });
+            }, 10);
+        };
+
+        stopButton.onclick = function () {
+            video.pause();
+            clearInterval(recognizeFaceInterval);
+        };
+
+
+    </script>
+}

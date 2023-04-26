@@ -1,9 +1,9 @@
 ﻿using QLSV.Data.Infrastructure;
-using QLSV.Data.Repositories.Repository;
+using QLSV.Model.Models;
 
 namespace QLSV.Data.Repositories.IRepository
 {
-    public interface ICourseRepos : IGenericRepository<CourseRepos>
+    public interface ICourseRepos : IGenericRepository<Course>
     {
     }
 }

@@ -15,11 +15,15 @@ namespace QLSV.Data.Infrastructure
         private IResultRepos resultRepos;
         private IAttendanceRepos attendanceRepos;
 
+        public UnitOfWork(StudentDBContext context)
+        {
+            this._context = context;
+        }
         public IDepartmentRepos DepartmentRepos
         {
             get
             {
-                if (departmentRepos == null)
+                if (this.departmentRepos == null)
                 {
                     departmentRepos = new DepartmentRepos(this._context);
                 }

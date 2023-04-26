@@ -42,15 +42,6 @@ namespace QLSV.Data.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ResultsCourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ResultsStudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ResultsTeacherId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -59,9 +50,29 @@ namespace QLSV.Data.Migrations
 
                     b.HasKey("AttendanceId");
 
-                    b.HasIndex("ResultsTeacherId", "ResultsCourseId", "ResultsStudentId");
+                    b.HasIndex("StudentId", "TeacherId", "CourseId");
 
                     b.ToTable("Attendances");
+
+                    b.HasData(
+                        new
+                        {
+                            AttendanceId = 1,
+                            AttenTime = new DateTime(2023, 4, 23, 14, 45, 6, 241, DateTimeKind.Local).AddTicks(8583),
+                            Check = true,
+                            CourseId = 1,
+                            StudentId = 1,
+                            TeacherId = 1
+                        },
+                        new
+                        {
+                            AttendanceId = 2,
+                            AttenTime = new DateTime(2023, 4, 23, 14, 45, 6, 241, DateTimeKind.Local).AddTicks(8599),
+                            Check = true,
+                            CourseId = 1,
+                            StudentId = 1,
+                            TeacherId = 1
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Classroom", b =>
@@ -90,6 +101,17 @@ namespace QLSV.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Classrooms");
+
+                    b.HasData(
+                        new
+                        {
+                            TeacherId = 1,
+                            CourseId = 1,
+                            EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Lesson = "1,2,3",
+                            Semester = 5,
+                            StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Course", b =>
@@ -132,6 +154,15 @@ namespace QLSV.Data.Migrations
                     b.HasKey("CourseId");
 
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            CourseId = 1,
+                            Name = "ASP.NET",
+                            PracticeCreditsNumber = 1.0,
+                            TheoryCreditsNumber = 2.0
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Department", b =>
@@ -153,6 +184,20 @@ namespace QLSV.Data.Migrations
                     b.HasKey("DepartmentId");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            DepartmentId = 1,
+                            Description = "Khoa công nghệ thông tin",
+                            Name = "CNTT"
+                        },
+                        new
+                        {
+                            DepartmentId = 2,
+                            Description = "Khoa quản trị kinh doanh",
+                            Name = "QTKD"
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.PrimaryClass", b =>
@@ -179,6 +224,20 @@ namespace QLSV.Data.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("PrimaryClasses");
+
+                    b.HasData(
+                        new
+                        {
+                            PrimaryClassId = 1,
+                            DepartmentId = 1,
+                            Name = "KTPM01"
+                        },
+                        new
+                        {
+                            PrimaryClassId = 2,
+                            DepartmentId = 1,
+                            Name = "CNTT01"
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Result", b =>
@@ -209,6 +268,14 @@ namespace QLSV.Data.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Results");
+
+                    b.HasData(
+                        new
+                        {
+                            TeacherId = 1,
+                            CourseId = 1,
+                            StudentId = 1
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Student", b =>
@@ -220,35 +287,33 @@ namespace QLSV.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"), 1L, 1);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Avatar")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("BackCCCDImage")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<DateTime>("CCCDDateStart")
+                    b.Property<DateTime?>("CCCDDateStart")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CCCDNumber")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.Property<DateTime>("DateOfAdmission")
+                    b.Property<DateTime?>("DateOfAdmission")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<byte[]>("FrontCCCDImage")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Major")
@@ -272,11 +337,29 @@ namespace QLSV.Data.Migrations
                     b.Property<int>("PrimaryClassId")
                         .HasColumnType("int");
 
+                    b.Property<string>("StudentCode")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.HasKey("StudentId");
 
                     b.HasIndex("PrimaryClassId");
 
                     b.ToTable("Students");
+
+                    b.HasData(
+                        new
+                        {
+                            StudentId = 1,
+                            Address = "Đông Anh - Hà Nội",
+                            Gender = "Nam",
+                            Major = "KTPM",
+                            Name = "Nguyễn Anh Tú",
+                            PhoneNumber = "0966229562",
+                            PrimaryClassId = 1,
+                            StudentCode = "2019601375"
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Teacher", b =>
@@ -301,18 +384,32 @@ namespace QLSV.Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TeacherCode")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.HasKey("TeacherId");
 
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Teachers");
+
+                    b.HasData(
+                        new
+                        {
+                            TeacherId = 1,
+                            DepartmentId = 1,
+                            Name = "Nguyễn Thị Hương Lan",
+                            TeacherCode = "2009601375"
+                        });
                 });
 
             modelBuilder.Entity("QLSV.Model.Models.Attendance", b =>
                 {
                     b.HasOne("QLSV.Model.Models.Result", "Results")
                         .WithMany("Attendances")
-                        .HasForeignKey("ResultsTeacherId", "ResultsCourseId", "ResultsStudentId")
+                        .HasForeignKey("StudentId", "TeacherId", "CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

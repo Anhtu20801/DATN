@@ -1,9 +1,9 @@
 ﻿using QLSV.Data.Infrastructure;
-using QLSV.Data.Repositories.Repository;
+using QLSV.Model.Models;
 
 namespace QLSV.Data.Repositories.IRepository
 {
-    public interface IAttendanceRepos : IGenericRepository<AttendanceRepos>
+    public interface IAttendanceRepos : IGenericRepository<Attendance>
     {
     }
 }

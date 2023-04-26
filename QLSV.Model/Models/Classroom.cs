@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLSV.Model.Models
@@ -23,10 +24,11 @@ namespace QLSV.Model.Models
 
         public int Semester { get; set; } //Hoc ky
         public string Lesson { get; set; } //Tiet hoc
-
+        [ValidateNever]
         public virtual Course Courses { get; set; }
-
+        [ValidateNever]
         public virtual Teacher Teachers { get; set; }
+        [ValidateNever]
         public virtual ICollection<Result> Results { get; set; }
     }
 }

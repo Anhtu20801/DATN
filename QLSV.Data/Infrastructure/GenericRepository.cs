@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -6,8 +7,8 @@ namespace QLSV.Data.Infrastructure
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private StudentDBContext _context = null;
-        private DbSet<T> dbSet = null;
+        private StudentDBContext _context;
+        private DbSet<T> dbSet;
 
         public GenericRepository(StudentDBContext _context)
         {
@@ -38,7 +39,7 @@ namespace QLSV.Data.Infrastructure
 
         public virtual void Update(T entity)
         {
-            dbSet.Attach(entity);
+            //dbSet.Attach(entity);
             _context.Entry<T>(entity).State = EntityState.Modified;
         }
 
@@ -63,12 +64,7 @@ namespace QLSV.Data.Infrastructure
 
         public virtual T GetSingleById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual void Save()
-        {
-            throw new NotImplementedException();
+            return this.dbSet.Find(id);
         }
     }
 }

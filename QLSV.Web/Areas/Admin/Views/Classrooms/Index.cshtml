@@ -1,0 +1,59 @@
+﻿@model IEnumerable<QLSV.Model.Models.Classroom>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Thêm lớp học phần</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên lớp</th>
+            <th>
+                Thời gian bắt đầu
+            </th>
+            <th>
+                Thời gian kết thúc
+            </th>
+            <th>
+                Tiết học
+            </th>
+            <th>
+                Giáo viên
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courses.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lesson)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teachers.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

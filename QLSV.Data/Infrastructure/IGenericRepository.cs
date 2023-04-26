@@ -16,6 +16,5 @@ namespace QLSV.Data.Infrastructure
         void Delete(int id);
         void Delete(T entity);
         void DeleteMulti(Expression<Func<T, bool>> where);
-        void Save();
     }
 }

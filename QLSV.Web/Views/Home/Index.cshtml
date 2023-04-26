@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row pt-3">
+    <div class="col-md-6">
+        <h2>Nhận diện khuôn mặt</h2>
+        <video id="video" width="100%" height="auto"></video>
+        <button id="startButton" class="btn btn-primary">Bắt đầu</button>
+        <button id="stopButton" class="btn btn-danger">Dừng</button>
+    </div>
+    <div class="col-md-6">
+        <h2>Kết quả điểm danh</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Số thứ tự</th>
+                    <th>Mã sinh viên</th>
+                    <th>Tên sinh viên</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>SV001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>Điểm danh thành công</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>SV002</td>
+                    <td>Trần Thị B</td>
+                    <td>Chưa điểm danh</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var video = document.getElementById('video');
+        var startButton = document.getElementById('startButton');
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+
+        startButton.onclick = function () {
+            var streamConstraints = { video: true, audio: false };
+            navigator.mediaDevices.getUserMedia(streamConstraints)
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function (error) {
+                    console.log('Error: ', error);
+                });;
+        };
+    </script>
+    }
+
+
+
