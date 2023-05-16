@@ -9,5 +9,11 @@ namespace QLSV.Data.Repositories.Repository
         public StudentRepos(StudentDBContext _context) : base(_context)
         {
         }
+
+        public Student getByStudentCode(string studentCode)
+        {
+            
+            return base.dbSet.SingleOrDefault(s => s.StudentCode == studentCode);
+        }
     }
 }

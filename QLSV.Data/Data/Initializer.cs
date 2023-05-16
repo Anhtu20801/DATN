@@ -11,19 +11,24 @@ namespace QLSV.Data.Data
                 new Department() { DepartmentId = 1, Name = "CNTT", Description = "Khoa công nghệ thông tin" },
                 new Department() { DepartmentId = 2, Name = "QTKD", Description = "Khoa quản trị kinh doanh" }
             );
-
+            modelBuilder.Entity<Major>().HasData(
+                new Major() {MajorId = 1, Name = "CNTT", Description="Ngành công nghệ thông tin", DepartmentId=1 },
+                new Major() {MajorId = 2, Name = "KTPM", Description="Ngành kỹ thuật phần mềm", DepartmentId=1 }
+            );
             modelBuilder.Entity<PrimaryClass>().HasData(
                 new PrimaryClass()
                 {
-                    PrimaryClassId= 1,
-                    Name = "KTPM01",
-                    DepartmentId = 1
+                    PrimaryClassId = 1,
+                    Name = "CNTT01",
+                    MajorId = 1,
+                    
                 },
                 new PrimaryClass()
                 {
                     PrimaryClassId = 2,
-                    Name = "CNTT01",
-                    DepartmentId = 1
+                    Name = "KTPM01",
+                    MajorId = 2,
+                    
                 }
             );
 
@@ -35,9 +40,8 @@ namespace QLSV.Data.Data
                     Name = "Nguyễn Anh Tú",
                     Gender = "Nam",
                     Address = "Đông Anh - Hà Nội",
-                    Major = "KTPM",
                     PhoneNumber = "0966229562",
-                    PrimaryClassId= 1
+                    PrimaryClassId= 2
                 }
             );
 
@@ -64,10 +68,14 @@ namespace QLSV.Data.Data
             modelBuilder.Entity<Classroom>().HasData(
                 new Classroom() 
                 {
+                    ClassroomId = 1,
                     TeacherId= 1,
                     CourseId= 1,
+                    Name = "IT6000.1",
                     Semester = 5,
-                    Lesson = "1,2,3"
+                    Lesson = "1,2,3",
+                    CountStudent = 1,
+                    MaxStudent = 40
                 }
             );
 
@@ -75,8 +83,7 @@ namespace QLSV.Data.Data
                 new Result()
                 {
                     StudentId = 1,
-                    TeacherId = 1,
-                    CourseId = 1
+                    ClassroomId = 1
                 }
             );
 
@@ -84,17 +91,9 @@ namespace QLSV.Data.Data
                 new Attendance() 
                 {
                     AttendanceId = 1,
-                    StudentId = 1, 
-                    TeacherId = 1,
-                    CourseId= 1,
-                    Check = true
-                },
-                new Attendance()
-                {
-                    AttendanceId = 2,
-                    StudentId = 1,
-                    TeacherId = 1,
-                    CourseId = 1,
+                    ClassroomId= 1,
+                    StudentId= 1,
+                    AttenTime = DateTime.Now,
                     Check = true
                 }
             );

@@ -1,23 +1,26 @@
 ﻿@model IEnumerable<QLSV.Model.Models.PrimaryClass>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách lớp chính";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h3>@ViewData["Title"]</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Thêm lớp</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Tên lớp
+                Khoa
             </th>
             <th>
-                Khoa
+                Ngành
+            </th>
+            <th>
+                Tên lớp
             </th>
             <th>
                 Mô tả
@@ -26,23 +29,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PrimaryClassId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PrimaryClassId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PrimaryClassId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Major.Department.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Major.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PrimaryClassId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PrimaryClassId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PrimaryClassId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

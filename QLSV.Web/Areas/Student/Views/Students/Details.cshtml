@@ -1,109 +1,107 @@
 ﻿@model QLSV.Model.Models.Student
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+    ViewData["Title"] = "Thông tin sinh viên";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
 }
 
-<h1>Details</h1>
 
 <div>
-    <h4>Student</h4>
+    <h3>@ViewBag.Title</h3>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StudentCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StudentCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Major)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Major)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfBirth)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateOfBirth)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfAdmission)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateOfAdmission)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CCCDNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CCCDNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CCCDDateStart)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CCCDDateStart)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FrontCCCDImage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FrontCCCDImage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BackCCCDImage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BackCCCDImage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Avatar)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Avatar)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicareCardNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MedicareCardNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PrimaryClass)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PrimaryClass.Name)
-        </dd>
-    </dl>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Mã sinh viên</label>
+                        @Html.DisplayFor(model => model.StudentCode)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Họ tên</label>
+                        @Html.DisplayFor(model => model.Name)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Ngành học</label>
+                        @Html.DisplayFor(model => model.PrimaryClass.Major.Name)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Lớp</label>
+                        @Html.DisplayFor(model => model.PrimaryClass.Name)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder"></label>
+                        @if (Model.Avatar != null)
+                        {
+                            var pathImage = "data:image;base64," + Convert.ToBase64String(Model.Avatar);
+                            <image src="@pathImage" />
+                        }
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Giới tính</label>
+                        @Html.DisplayFor(model => model.Gender)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Ngày sinh</label>
+                        @Html.DisplayFor(model => model.DateOfBirth)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Ngày nhập học</label>
+                        @Html.DisplayFor(model => model.DateOfAdmission)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Địa chỉ</label>
+                        @Html.DisplayFor(model => model.Address)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Số điện thoại</label>
+                        @Html.DisplayFor(model => model.PhoneNumber)
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Số CCCD</label>
+                        @Html.DisplayFor(model => model.CCCDNumber)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Ngày cấp</label>
+                        @Html.DisplayFor(model => model.CCCDDateStart)
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Mặt trước CCCD</label>
+                        @if (Model.FrontCCCDImage != null)
+                        {
+                            var pathImage = "data:image;base64," + Convert.ToBase64String(Model.FrontCCCDImage);
+                            <image src="@pathImage" />
+                        }else{
+                            <image src = "" style="width: 75px; height: 75px; margin-left: 10px"/>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-bolder">Mặt sau CCCD</label>
+                        @if (Model.BackCCCDImage != null)
+                        {
+                            var pathImage = "data:image;base64," + Convert.ToBase64String(Model.BackCCCDImage);
+                            <image src="@pathImage" />
+                        }
+                        else
+                        {
+                            <image src="" style="width: 75px; height: 75px; margin-left: 10px" />
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.StudentId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.StudentId">Edit</a>
 </div>

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using QLSV.Data.Data;
 using QLSV.Model.Models;
 
 namespace QLSV.Data
 {
-    public class StudentDBContext : DbContext
+    public class StudentDBContext: IdentityDbContext
     {
         public StudentDBContext()
         {
@@ -22,10 +23,10 @@ namespace QLSV.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Classroom>()
-                .HasKey(classroom => new { classroom.TeacherId, classroom.CourseId });
+                .HasKey(cl => cl.ClassroomId);
 
             modelBuilder.Entity<Result>()
-                .HasKey(r => new { r.TeacherId, r.CourseId,r.StudentId });
+                .HasKey(r => new { r.ClassroomId, r.StudentId });
 
             modelBuilder.Entity<Result>()
                 .HasOne<Student>(s => s.Student)
@@ -36,27 +37,28 @@ namespace QLSV.Data
             modelBuilder.Entity<Result>()
                 .HasOne<Classroom>(classroom => classroom.Classroom)
                 .WithMany(r => r.Results)
-                .HasForeignKey(classroom => new { classroom.TeacherId, classroom.CourseId})
+                .HasForeignKey(classroom =>  classroom.ClassroomId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Attendance>()
                 .HasOne<Result>(r => r.Results)
                 .WithMany(a => a.Attendances)
-                .HasForeignKey(r => new {r.StudentId, r.TeacherId, r.CourseId});
+                .HasForeignKey(r => new {r.StudentId, r.ClassroomId});
             
             modelBuilder.Seed();
             base.OnModelCreating(modelBuilder);
         }
 
         //entities
-        public DbSet<Department> Departments { get; set; }
-
-        public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<PrimaryClass> PrimaryClasses { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<Classroom> Classrooms { get; set; }
-        public DbSet<Result> Results { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Major> Majors { get; set; }
+        public virtual DbSet<Teacher> Teachers { get; set; }
+        public virtual DbSet<PrimaryClass> PrimaryClasses { get; set; }
+        public virtual DbSet<Student> Students { get; set; }
+        public virtual DbSet<Course> Courses { get; set; }
+        public virtual DbSet<Classroom> Classrooms { get; set; }
+        public virtual DbSet<Result> Results { get; set; }
+        public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

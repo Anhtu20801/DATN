@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QLSV.Common;
 using QLSV.Data.Infrastructure;
 using QLSV.Model.Models;
 
 namespace QLSV.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = RolesHelper.Role_Admin)]
     public class CoursesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

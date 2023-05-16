@@ -6,29 +6,27 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<p>@ViewBag.Folder</p>
-<button id="trainingBtn" class="btn btn-primary">Train face image</button>
+
+
+
 <a id="recognize" class="btn btn-primary" asp-area="Instructor" asp-controller="Attendances" asp-action="Recognize" style="outline: none">Điểm danh</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TeacherId)
+               Lớp học
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CourseId)
+                Sinh viên
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StudentId)
+                Điểm danh
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AttenTime)
+                Trạng thái
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Check)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
+                Ghi chú
             </th>
             <th></th>
         </tr>
@@ -38,7 +36,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CourseId)
+                    @Html.DisplayFor(modelItem => item.ClassroomId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.StudentId)
@@ -52,9 +50,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Note)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TeacherId)
-                </td>
                 
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.AttendanceId">Edit</a> |
@@ -66,25 +61,3 @@
     </tbody>
 </table>
 
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $('#trainingBtn').on('click', function(){
-                $.ajax({
-                    type: 'GET',
-                    url: '@Url.Action("TrainingFace","Attendances")',
-                    success: function(response){
-                        if(response.result == true)
-                            alert("training data successfully");
-                        console.log(response);
-                    },
-                    error: function(error){
-                        alert("training data don't successfully");
-                    }
-                })
-            })
-        });
-
-    </script>
-}

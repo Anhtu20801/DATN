@@ -10,15 +10,15 @@ namespace QLSV.Model.Models
         public int PrimaryClassId { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(250)]
         public string Name { get; set; }
 
         [Column(TypeName = "nvarchar(max)")]
         public string? Description { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int MajorId { get; set; }
         [ValidateNever]
-        public virtual Department Department { get; set; }
+        public virtual Major Major { get; set; }
         
         [ValidateNever]
         public virtual ICollection<Student> Students { get; set; }

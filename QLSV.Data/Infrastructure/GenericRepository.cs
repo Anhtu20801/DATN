@@ -7,8 +7,8 @@ namespace QLSV.Data.Infrastructure
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private StudentDBContext _context;
-        private DbSet<T> dbSet;
+        protected readonly StudentDBContext _context;
+        protected DbSet<T> dbSet;
 
         public GenericRepository(StudentDBContext _context)
         {
@@ -39,7 +39,7 @@ namespace QLSV.Data.Infrastructure
 
         public virtual void Update(T entity)
         {
-            //dbSet.Attach(entity);
+            dbSet.Attach(entity);
             _context.Entry<T>(entity).State = EntityState.Modified;
         }
 

@@ -10,8 +10,7 @@ namespace QLSV.Model.Models
         [ValidateNever]
         public virtual Student Student { get; set; }
 
-        public int TeacherId { get; set; }
-        public int CourseId { get; set; }
+        public int ClassroomId { get; set; }
         [ValidateNever]
         public virtual Classroom Classroom { get; set; }
         
@@ -23,6 +22,10 @@ namespace QLSV.Model.Models
         public int? MitermMark { get; set; } // Diem kiem tra giua ky
         public int? FinalMark { get; set; } // Diem kiem tra cuoi ky
         public string? Note { get; set; }
+
+        public DateTime? RegisterDate { get; set; } //Ngay đăng ký học
+        public bool Status { get; set; } //Trạng thái
         
+
     }
 }

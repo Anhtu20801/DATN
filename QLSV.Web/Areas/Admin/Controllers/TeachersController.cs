@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using QLSV.Common;
 using QLSV.Data.Infrastructure;
 using QLSV.Model.Models;
 
 namespace QLSV.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = RolesHelper.Role_Admin)]
     public class TeachersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,78 +22,88 @@ namespace QLSV.Web.Areas.Admin.Controllers
         // GET: Admin/Teachers
         public IActionResult Index()
         {
-            var students = _unitOfWork.TeacherRepos.GetAll();
-            if (students != null)
-                return View(students);
+            var teachers = _unitOfWork.TeacherRepos.GetAll();
+            if (teachers != null)
+                return View(teachers);
 
             return View();
         }
 
         // GET: Admin/Teachers/Details/5
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _unitOfWork.StudentRepos == null)
+            if (_unitOfWork.StudentRepos == null)
             {
                 return NotFound();
             }
 
-            var student = _unitOfWork.StudentRepos.GetSingleById(id);
-            if (student == null)
+            var teacher = _unitOfWork.TeacherRepos.GetSingleById(id);
+            if (teacher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(teacher);
         }
 
         // GET: Admin/Teachers/Create
         public IActionResult Create()
         {
-            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name");
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
             return View();
         }
 
         // POST: Admin/Teachers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Teacher teacher)
+        public async Task<IActionResult> Create(Teacher teacher)
         {
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
             if (ModelState.IsValid)
             {
-                _unitOfWork.TeacherRepos.Add(teacher);
-                _unitOfWork.SaveChange();
-                return RedirectToAction(nameof(Index));
+                if (_unitOfWork.TeacherRepos.getByTeacherCode(teacher.TeacherCode) != null)
+                {
+                    ViewBag.Message = "Mã giáo viên đã tồn tại. Vui lòng nhập mã mới";
+                    return View(teacher);
+                }
+                User user = new User
+                {
+                    UserName = teacher.TeacherCode
+                };
+
+                var result = await _unitOfWork.UserRepos.Add(user, role: RolesHelper.Role_Teacher);
+
+                if (result.Succeeded)
+                {
+                    _unitOfWork.TeacherRepos.Add(teacher);
+                    _unitOfWork.SaveChange();
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", teacher.DepartmentId);
+
             return View(teacher);
         }
 
         // GET: Admin/Teachers/Edit/5
         public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var teacher = _unitOfWork.StudentRepos.GetSingleById(id);
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
+            
+            var teacher = _unitOfWork.TeacherRepos.GetSingleById(id);
             if (teacher == null)
             {
                 return NotFound();
             }
-            //ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", teacher.DepartmentId);
+
             return View(teacher);
         }
 
         // POST: Admin/Teachers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Teacher teacher)
         {
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
             if (id != teacher.TeacherId)
             {
                 return NotFound();
@@ -124,6 +138,7 @@ namespace QLSV.Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
 
             return View(teacher);
         }
@@ -133,6 +148,8 @@ namespace QLSV.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            ViewData["DepartmentId"] = new SelectList(_unitOfWork.DepartmentRepos.GetAll(), "DepartmentId", "Name");
+
             var teacher = _unitOfWork.TeacherRepos.GetSingleById(id);
             if (teacher != null)
             {

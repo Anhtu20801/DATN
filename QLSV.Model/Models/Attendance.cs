@@ -8,12 +8,11 @@ namespace QLSV.Model.Models
     {
         [Key]
         public int AttendanceId { get; set; }
-        public DateTime AttenTime { get; set; } = DateTime.Now;
+        public DateTime AttenTime { get; set; }
         public bool Check { get; set; }
         public string? Note { get; set; }
         
-        public int TeacherId { get; set; }
-        public int CourseId { get; set; }
+        public int ClassroomId { get; set; }
         public int StudentId { get; set; }
         [ValidateNever]
         public virtual Result Results { get; set; }

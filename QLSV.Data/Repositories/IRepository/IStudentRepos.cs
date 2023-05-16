@@ -6,5 +6,6 @@ namespace QLSV.Data.Repositories.IRepository
 {
     public interface IStudentRepos : IGenericRepository<Student>
     {
+        Student getByStudentCode(string studentCode);
     }
 }

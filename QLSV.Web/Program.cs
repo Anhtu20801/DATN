@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using QLSV.Data;
+using QLSV.Data.Data;
 using QLSV.Data.Infrastructure;
+using QLSV.Model.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,27 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<StudentDBContext>();
+
+builder.Services.AddScoped<IDbInitialUser, DbInitialUser>();
+
+builder.Services.ConfigureApplicationCookie(ops =>
+{
+    ops.LoginPath = $"/Account/Login";
+    ops.LogoutPath = $"/Account/Logout";
+    ops.AccessDeniedPath = $"/Account/AccessDenied";
+
+    // Cookie settings 
+    // prevent cookie from being accessed 
+    // through javascript on the client side 
+    ops.Cookie.HttpOnly = true;
+
+    ops.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+
+    ops.SlidingExpiration = true;
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddRazorPages();
@@ -29,6 +54,7 @@ app.UseHttpsRedirection();
 app.MapRazorPages();
 app.UseStaticFiles();
 
+SeedDatabase();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -42,7 +68,17 @@ app.UseEndpoints(endpoints =>
     );
     app.MapControllerRoute(
         name: "default",
-        pattern: "{area=Instructor}/{controller=Attendances}/{action=Index}/{id?}");
+        pattern: "/{controller=Account}/{action=Login}/{id?}");
 });
 
 app.Run();
+
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitialUser>();
+        dbInitializer.InitialUser();
+    }
+}

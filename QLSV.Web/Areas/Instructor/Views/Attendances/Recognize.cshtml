@@ -4,18 +4,20 @@
 }
 
 <h2 style="margin: 10px;">@ViewBag.Title</h2>
+<div class="d-flex pb-4">
+    <label for="classroomid" class="mr-4">Lớp học: </label>
+    <select id="classroomid" name="classroomid" asp-items="@ViewBag.ClassroomList" style="cursor: pointer"></select>
+</div>
 <div class="row">
-    <div class="col-md-5">
-        @ViewBag.Message
+    <div class="col-md-4">
         <video id="video" style="width: 100%; height: auto; margin-bottom: 15px"></video>
-        <canvas id="canvas" style="width: 100%; height: auto; min-height: 360px; margin-bottom: 15px"></canvas>
-        <image id="image" src="" style="width: 100%; height: auto;" />
+        <canvas id="canvas" style="width: 100%; margin-bottom: 15px"></canvas>
         <button id="start" class="btn btn-primary">Điểm danh</button>
         <button id="stop" class="btn btn-danger">Dừng</button>
     </div>
-    <div class="col-md-7">
+    
+    <div class="col-md ml-3">
         <h3>Kết quả điểm danh</h3>
-        <p>@ViewBag.ImageData</p>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -27,63 +29,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                </tr>
             </tbody>
         </table>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        var image = document.getElementById('image');
         var video = document.getElementById('video');
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
 
-        var startButton = document.querySelector("#start");
-        var stopButton = document.querySelector("#stop");
+        var startButton = document.getElementById("start");
+        var stopButton = document.getElementById("stop");
+        
         var detectFaceInterval;
-        var recognizeFaceInterval;
+        
         canvas.style.display = 'none';
         // Initialize the webcam
         navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             .then(function (stream) {
                 video.srcObject = stream;
                 video.play();
-                canvas.style.display = 'block';
-                video.style.display = 'none';
-                setInterval(function(){
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                }, 10);
-
-                //detectFaceInterval = setInterval(function () {
-                //    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                //    var image = canvas.toDataURL();
-                //    $.ajax({
-                //        type: "POST",
-                //        url: "@Url.Action("DetectFace", "Attendances")",
-                //        async: false,
-                //        data: { imageString: image },
-                //        success: function (result) {
-                //            console.log(result);
-                //            if (result.result == true) {
-                //                var pX = canvas.width / 2 - result.faceWidth / 2;
-                //                var pY = canvas.height / 2 - result.faceHeight / 2;
-
-                //                context.rect(pX, pY, result.faceWidth + 50, result.faceHeight);
-                //                context.lineWidth = "1";
-                //                context.strokeStyle = "red";
-                //                context.stroke();
-                //            }
-                            
-                //        },
-                //        error: function (xhr) {
-                //            alert('error');
-                //        }
-                //    });
-                //}, 10);
             })
             .catch(function (err) {
                 console.log("An error occurred: " + err);
@@ -93,51 +61,74 @@
             if (video.paused) {
                 video.play();
             }
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            
             video.style.display = 'none';
             canvas.style.display = 'block';
-
-            recognizeFaceInterval = setInterval(function () {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            var classroomid = $("#classroomid").find(":selected").val();
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            var image = canvas.toDataURL();
+            var index = 1;
+            detectFaceInterval = setInterval(function () {
+                
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
                 var image = canvas.toDataURL();
+                
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("Recognize", "Attendances")",
                     async: false,
-                    data: { imageString: image },
-                    success: function (result) {
-                        console.log(result);
-                        if (result.result == true) {
-                            //clearInterval(detectFaceInterval);
-                            console.log(result.label);
-                            var s = `
-                                        <tr>
-                                            <td>${result.label}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>Điểm danh thành công</td>
-                                            <td>${result.time}</td>
-                                        </tr>
-                                    `
-                            $('tbody').html(s);
-                            //video.pause();
-                            clearInterval(recognizeFaceInterval);
+                    data: { imageString: image, classroomId: classroomid },
+                    success: function (respone) {
+                        console.log(respone);
+                        if (respone.result == true) {
+                            //Draw rectangle face
+                            context.beginPath();
+                            context.lineWidth = "2";
+                            context.strokeStyle = "red";
+                            context.rect(respone.faceX, respone.faceY, respone.faceW, respone.faceH);
+                            context.stroke();
+                            context.closePath();
+
+                            if (respone.check == 1) {
+                                if (confirm(`${respone.name} - ${respone.studentCode} - điểm danh thành công`)) {
+                                    $('tbody').append(
+                                        `<tr>
+                                            <th>${index}</th>
+                                            <th>${respone.studentCode}</th>
+                                            <th>${respone.name}</th>
+                                            <th>Điểm danh thành công</th>
+                                            <th>${respone.time}</th>
+                                        </tr>`
+                                    );
+                                    index++;
+                                    clearInterval(detectFaceInterval);
+                                    video.pause();
+                                }
+                                
+                            }
+                            else if(respone.check == 0)
+                                alert("Bạn không thuộc lớp này!");
+                            
+
                         }
-                        //else
-                        //    alert("don't detect face");
                     },
-                    error: function (error) {
-                        console.log('error: ' + error.error);
+                    error: function (eror) {
+                        console.log(error)
+                        //alert('error');
+                        clearInterval(detectFaceInterval);
+                        video.pause();
                     }
                 });
-            }, 10);
+            }, 20);
         };
+
 
         stopButton.onclick = function () {
+            clearInterval(detectFaceInterval);
             video.pause();
-            clearInterval(recognizeFaceInterval);
         };
-
-
     </script>
 }

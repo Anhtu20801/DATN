@@ -1,30 +1,31 @@
 ﻿@model IEnumerable<QLSV.Model.Models.Classroom>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách lớp học phần";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
-
+<h3>@ViewBag.Title</h3>
 <p>
-    <a asp-action="Create">Thêm lớp học phần</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>Tên lớp</th>
+            <th>
+                Tên lớp
+            </th>
+            <th>
+                Giáo viên
+            </th>
+            <th>
+                Môn học
+            </th>
             <th>
                 Thời gian bắt đầu
             </th>
             <th>
                 Thời gian kết thúc
-            </th>
-            <th>
-                Tiết học
-            </th>
-            <th>
-                Giáo viên
             </th>
             <th></th>
         </tr>
@@ -34,24 +35,26 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Courses.Name)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.StartTime)
+                    @Html.DisplayFor(modelItem => item.Teacher.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.EndTime)
+                    @Html.DisplayFor(modelItem => item.Course.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Lesson)
+                    @item.StartTime.ToString("dd-MM-yyyy")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Teachers.Name)
+                    @item.EndTime.ToString("dd-MM-yyyy")
                 </td>
+
+
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    <a asp-action="Edit" asp-route-id="@item.ClassroomId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ClassroomId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ClassroomId">Delete</a>
                 </td>
             </tr>
         }

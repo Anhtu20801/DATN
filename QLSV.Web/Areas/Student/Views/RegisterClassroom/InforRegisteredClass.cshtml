@@ -1,0 +1,76 @@
+﻿@model IEnumerable<QLSV.Model.Models.Result>
+
+@{
+    ViewData["Title"] = "Thông tin đăng ký học phần chi tiết của sinh viên";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+<h3>@ViewBag.Title</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên lớp</th>
+            <th>Tên học phần</th>
+            <th>Ngày đăng ký</th>
+            <th>Trạng thái</th>
+            <th>Học kỳ</th>
+            <th>Tiết học</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegisterDate)
+                </td>
+                <td>
+                    @if(item.Status == true){<span style="color: red">Đang học</span>}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Semester)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Lesson)
+                </td>
+                <td><a style="cursor: pointer; color: blue" onclick="cancelClass(@item.ClassroomId, @item.StudentId)">Hủy đăng ký</a></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        function cancelClass(classId, studentId) {
+            if(confirm('Bạn có chắc muốn hủy học phần này không?')){
+                $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Cancel","RegisterClassroom")',
+                data: { classId: classId, studentId: studentId},
+                success: function (response) {
+                    if(response.result == false){
+                        console.log(respone);
+                    }else{
+                        alert(response.result);
+                        location.reload();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+            }
+
+        }
+
+    </script>
+}

@@ -1,35 +1,39 @@
 ﻿@model QLSV.Model.Models.Teacher
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm giáo viên mới";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Teacher</h4>
+<h3>@ViewData["Title"]</h3>
 <hr />
+<h4 style="color: red">@ViewBag.Message</h4>
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-5">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="TeacherCode" class="control-label">Mã giáo viên</label>
+                <input asp-for="TeacherCode" class="form-control" placeholder="Nhập mã giáo viên" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
+                <label asp-for="Name" class="control-label">Họ tên</label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập họ tên"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label">Địa chỉ</label>
+                <input asp-for="Address" class="form-control" placeholder="Nhập địa chỉ giáo viên"/>
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
+                <label asp-for="PhoneNumber" class="control-label">Số điện thoại</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DepartmentId" class="control-label"></label>
+                <label asp-for="DepartmentId" class="control-label">Khoa</label>
                 <select asp-for="DepartmentId" class ="form-control" asp-items="ViewBag.DepartmentId"></select>
             </div>
             <div class="form-group">
@@ -40,7 +44,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Quay lại</a>
 </div>
 
 @section Scripts {

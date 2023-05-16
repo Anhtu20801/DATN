@@ -1,33 +1,57 @@
-﻿<nav class="navbar navbar-expand navbar-light bg-white topbar static-top shadow">
+﻿﻿@using Microsoft.AspNetCore.Identity
+@using QLSV.Common;
+@using QLSV.Data.Infrastructure;
+@inject IUnitOfWork _unitOfWork;
+@{
+    var teacher = _unitOfWork.TeacherRepos.getByTeacherCode(User.Identity.Name);
+    var student = _unitOfWork.StudentRepos.getByStudentCode(User.Identity.Name);
+    var admin = User.Identity.Name;
+}
+
+<nav class="navbar navbar-expand navbar-light bg-white topbar static-top" style="height: 50px; max-height: 50px">
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto d-flex justify-content-end" style="width: 100%">
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        </li>
         <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                    Nguyen Anh Tu
-                </span>
+        <li class="nav-item dropdown no-arrow" style="margin-left: 150px; padding-right: 50px">
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span class="mr-2 d-none d-lg-inline text-gray-600">
+                        @if (User.IsInRole(RolesHelper.Role_Admin)){
+                            @admin
+                        }
+                        else if (User.IsInRole(RolesHelper.Role_Teacher)){
+                            @teacher.Name
+                        }
+                        else{
+                            @student.Name
+                        }
+                            
+
+                    </span>
+                }
             </a>
+
             <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" style="cursor: pointer">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile
                 </a>
 
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
+                    <form asp-action="Logout" asp-controller="Account" asp-area="" method="post">
+                        <button type="submit" style="outline: none; border: none; background-color: transparent;">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> 
+                            Logout
+                        </button>
+                    </form>
                 </a>
+
             </div>
+           
         </li>
 
 
     </ul>
-
 </nav>

@@ -1,43 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using QLSV.Data;
+using QLSV.Common;
+using QLSV.Data.Infrastructure;
 using QLSV.Model.Models;
 
 namespace QLSV.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = RolesHelper.Role_Admin)]
     public class PrimaryClassesController : Controller
     {
-        private readonly StudentDBContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PrimaryClassesController(StudentDBContext context)
+        public PrimaryClassesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Admin/PrimaryClasses
         public async Task<IActionResult> Index()
         {
-            var studentDBContext = _context.PrimaryClasses.Include(p => p.Department);
-            return View(await studentDBContext.ToListAsync());
+            var primaryClasses = _unitOfWork.PrimaryClassRepos.GetAll();
+            return View(primaryClasses);
         }
 
         // GET: Admin/PrimaryClasses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _context.PrimaryClasses == null)
-            {
-                return NotFound();
-            }
-
-            var primaryClass = await _context.PrimaryClasses
-                .Include(p => p.Department)
-                .FirstOrDefaultAsync(m => m.PrimaryClassId == id);
+            var primaryClass = _unitOfWork.PrimaryClassRepos.GetSingleById(id);
             if (primaryClass == null)
             {
                 return NotFound();
@@ -49,51 +41,45 @@ namespace QLSV.Web.Areas.Admin.Controllers
         // GET: Admin/PrimaryClasses/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name");
+            ViewData["MajorId"] = new SelectList(_unitOfWork.MajorRepos.GetAll(), "MajorId", "Name");
             return View();
         }
 
         // POST: Admin/PrimaryClasses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PrimaryClassId,Name,Description,DepartmentId")] PrimaryClass primaryClass)
+        public async Task<IActionResult> Create([Bind("PrimaryClassId,Name,Description,MajorId")] PrimaryClass primaryClass)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(primaryClass);
-                await _context.SaveChangesAsync();
+                _unitOfWork.PrimaryClassRepos.Add(primaryClass);
+                await _unitOfWork.SaveChangeAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", primaryClass.DepartmentId);
+            ViewData["MajorId"] = new SelectList(_unitOfWork.MajorRepos.GetAll(), "MajorId", "Name");
             return View(primaryClass);
         }
 
         // GET: Admin/PrimaryClasses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.PrimaryClasses == null)
-            {
-                return NotFound();
-            }
+            ViewData["MajorId"] = new SelectList(_unitOfWork.MajorRepos.GetAll(), "MajorId", "Name");
 
-            var primaryClass = await _context.PrimaryClasses.FindAsync(id);
+            var primaryClass = _unitOfWork.PrimaryClassRepos.GetSingleById(id);
             if (primaryClass == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", primaryClass.DepartmentId);
+
             return View(primaryClass);
         }
 
         // POST: Admin/PrimaryClasses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PrimaryClassId,Name,Description,DepartmentId")] PrimaryClass primaryClass)
+        public async Task<IActionResult> Edit(int id, [Bind("PrimaryClassId,Name,Description,MajorId")] PrimaryClass primaryClass)
         {
+            ViewData["MajorId"] = new SelectList(_unitOfWork.MajorRepos.GetAll(), "MajorId", "Name");
             if (id != primaryClass.PrimaryClassId)
             {
                 return NotFound();
@@ -103,37 +89,23 @@ namespace QLSV.Web.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(primaryClass);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.PrimaryClassRepos.Update(primaryClass);
+                    await _unitOfWork.SaveChangeAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrimaryClassExists(primaryClass.PrimaryClassId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "DepartmentId", "Name", primaryClass.DepartmentId);
+            
             return View(primaryClass);
         }
 
         // GET: Admin/PrimaryClasses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.PrimaryClasses == null)
-            {
-                return NotFound();
-            }
-
-            var primaryClass = await _context.PrimaryClasses
-                .Include(p => p.Department)
-                .FirstOrDefaultAsync(m => m.PrimaryClassId == id);
+            var primaryClass = _unitOfWork.PrimaryClassRepos.GetSingleById(id);
             if (primaryClass == null)
             {
                 return NotFound();
@@ -147,23 +119,17 @@ namespace QLSV.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.PrimaryClasses == null)
-            {
-                return Problem("Entity set 'StudentDBContext.PrimaryClasses'  is null.");
-            }
-            var primaryClass = await _context.PrimaryClasses.FindAsync(id);
+
+            var primaryClass = _unitOfWork.PrimaryClassRepos.GetSingleById(id);
             if (primaryClass != null)
             {
-                _context.PrimaryClasses.Remove(primaryClass);
+                _unitOfWork.PrimaryClassRepos.Delete(primaryClass);
             }
             
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangeAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PrimaryClassExists(int id)
-        {
-          return (_context.PrimaryClasses?.Any(e => e.PrimaryClassId == id)).GetValueOrDefault();
-        }
+        
     }
 }

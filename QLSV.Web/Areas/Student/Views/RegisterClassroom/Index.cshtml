@@ -1,0 +1,70 @@
+﻿@model IEnumerable<QLSV.Model.Models.Classroom>
+
+@{
+    ViewData["Title"] = "Đăng ký học phần";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<h3>@ViewBag.Title</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên học phần</th>
+            <th>Giáo viên</th>
+            <th>TC lý thuyết</th>
+            <th>TC thực hành</th>
+            <th>Học kỳ</th>
+            <th>Tiết học</th>
+            <th>Sĩ số</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teacher.Name)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Course.TheoryCreditsNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Course.PracticeCreditsNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Semester)</td>
+                <td>@Html.DisplayFor(modelItem => item.Lesson)</td>
+                <td>@item.CountStudent / @item.MaxStudent</td>
+
+                <td><a style="cursor: pointer; color: blue" onclick="register(@item.ClassroomId)">Đăng ký</a></td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        function register(classId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Register","RegisterClassroom")',
+                data: { id: classId },
+                success: function (response) {
+                    if(response.result==true)
+                        alert(response.classname + "-" + response.message);
+                    else
+                        alert(response.message);
+
+                    location.reload();
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+
+        }
+
+    </script>
+}

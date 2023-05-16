@@ -1,0 +1,51 @@
+﻿@model IEnumerable<QLSV.Model.Models.Major>
+
+@{
+    ViewData["Title"] = "Danh sách ngành học";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<p>
+    <a asp-action="Create">Tạo mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Khoa
+            </th>
+            <th>
+                Tên ngành
+            </th>
+            <th>
+                Mô tả
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MajorId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.MajorId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.MajorId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

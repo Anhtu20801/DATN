@@ -1,0 +1,36 @@
+﻿@model QLSV.Model.Models.Major
+
+@{
+    ViewData["Title"] = "Thông tin chi tiết ngành học";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            Khoa
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Tên ngành
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Mô tả
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.MajorId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

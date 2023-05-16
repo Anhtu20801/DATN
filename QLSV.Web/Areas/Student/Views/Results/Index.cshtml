@@ -1,0 +1,89 @@
+﻿@model IEnumerable<QLSV.Model.Models.Result>
+@{
+    ViewData["Title"] = "Kết quả học tập";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+    var index = 1;
+}
+
+<h3>@ViewBag.Title</h3>
+<hr />
+<h4 style="color: red">@ViewBag.Message</h4>
+
+<table class="table mb-3 table-bordered">
+    <tr class="row">
+        <th class="col-3 pl-4">Mã sinh viên</th>
+        <td class="col pl-4">@ViewBag.Student.StudentCode</td>
+    </tr>
+    <tr class="row">
+        <th class="col-3 pl-4">Họ tên sinh viên</th>
+        <td class="col pl-4">@ViewBag.Student.Name</td>
+    </tr>
+    <tr class="row">
+        <th class="col-3 pl-4">Lớp</th>
+        <td class="col pl-4">@ViewBag.Student.PrimaryClass.Name</td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                STT
+            </th>
+            <th>
+                Tên môn
+            </th>
+            <th>
+                Tên lớp
+            </th>
+            <th>
+                Điểm thường xuyên
+            </th>
+            <th>
+                Điểm giữa kỳ
+            </th>
+            <th>
+                Điểm cuối kỳ
+            </th>
+            <th>
+                Số tiết nghỉ
+            </th>
+            <th>
+                Nghi chú
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @index
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Course.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegularMark)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MitermMark)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinalMark)
+                </td>
+                <td> </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                
+            </tr>
+            {
+                index++;
+            }
+        }
+    </tbody>
+</table>

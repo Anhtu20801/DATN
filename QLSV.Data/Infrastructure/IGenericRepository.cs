@@ -9,7 +9,7 @@ namespace QLSV.Data.Infrastructure
 {
     public interface IGenericRepository<T> where T : class
     {
-        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? include = null);
         T GetSingleById(int id);
         void Add(T entity);
         void Update(T entity);

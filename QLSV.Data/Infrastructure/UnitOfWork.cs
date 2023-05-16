@@ -1,12 +1,17 @@
-﻿using QLSV.Data.Repositories.IRepository;
+﻿using Microsoft.AspNetCore.Identity;
+using QLSV.Data.Repositories.IRepository;
 using QLSV.Data.Repositories.Repository;
+using QLSV.Model.Models;
 
 namespace QLSV.Data.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StudentDBContext _context;
+        private readonly UserManager<User> _userManager;
+
         private IDepartmentRepos departmentRepos;
+        private IMajorRepos majorRepos;
         private ITeacherRepos teacherRepos;
         private IPrimaryClassRepos primaryClassRepos;
         private IStudentRepos studentRepos;
@@ -14,10 +19,11 @@ namespace QLSV.Data.Infrastructure
         private IClassroomRepos classroomRepos;
         private IResultRepos resultRepos;
         private IAttendanceRepos attendanceRepos;
-
-        public UnitOfWork(StudentDBContext context)
+        private IUserRepos userRepos;
+        public UnitOfWork(StudentDBContext context, UserManager<User> _userManager)
         {
             this._context = context;
+            this._userManager = _userManager;
         }
         public IDepartmentRepos DepartmentRepos
         {
@@ -28,6 +34,17 @@ namespace QLSV.Data.Infrastructure
                     departmentRepos = new DepartmentRepos(this._context);
                 }
                 return departmentRepos;
+            }
+        }
+        public IMajorRepos MajorRepos
+        {
+            get
+            {
+                if (this.majorRepos == null)
+                {
+                    majorRepos = new MajorRepos(this._context);
+                }
+                return majorRepos;
             }
         }
 
@@ -112,6 +129,17 @@ namespace QLSV.Data.Infrastructure
                     attendanceRepos = new AttendanceRepos(this._context);
                 }
                 return attendanceRepos;
+            }
+        }
+        public IUserRepos UserRepos
+        {
+            get
+            {
+                if (userRepos == null)
+                {
+                    userRepos = new UserRepos(this._context, this._userManager);
+                }
+                return userRepos;
             }
         }
 

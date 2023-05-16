@@ -6,20 +6,13 @@
     <title>@ViewData["Title"] - QLSV.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/QLSV.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <partial name="~/Views/Shared/_NavbarPartial.cshtml" />
-    </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <partial name="~/Views/Shared/_FooterPartial.cshtml" />
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
